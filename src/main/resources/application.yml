@@ -1,0 +1,27 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: medisync-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/medisync_database
+    username: medisync_admin
+    password: admin
+  flyway:
+    enabled: true
+    locations: classpath:db_migration
+    baseline-on-migrate: true
+    schemas: medisync_schema
+    validateMigrationNaming: true
+  web:
+    path: /api
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/medisync
+aes:
+  secret:
+    key: 6NT4DQTZCzZL4Z3H9Dmtw9zHaMuGpmW5yre/kFF6PGI=
