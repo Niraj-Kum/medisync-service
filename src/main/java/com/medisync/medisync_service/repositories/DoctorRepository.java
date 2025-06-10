@@ -11,6 +11,9 @@ import java.util.Optional;
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
     Optional<Doctor> findByEmail(String email);
+    Optional<Doctor> findByMobile(String email);
+    boolean existsByEmail(String mobile);
+    boolean existsByMobile(String mobile);
 
     @Query("SELECT d FROM Doctor d WHERE email = :email OR mobile = :mobile")
     Optional<Doctor> findByEmailOrMobile(String email, String mobile);

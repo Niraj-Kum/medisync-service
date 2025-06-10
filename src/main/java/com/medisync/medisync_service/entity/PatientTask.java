@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -23,18 +24,16 @@ public class PatientTask extends CommonFields implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "doctor_id", nullable = false)
-    private Integer doctorId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-    @Column(name = "patient_id", nullable = false)
-    private Integer patientId;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "audio_file_url")
-    private String audioFileUrl;
+    @Column(name = "completed")
+    private Boolean completed;
 
-    @Column(name = "transcription_text")
-    private String transcriptionText;
-
-    @Column(name = "summary_text")
-    private String summaryText;
+    @Column(name = "due_date")
+    private Date dueDate;
 }

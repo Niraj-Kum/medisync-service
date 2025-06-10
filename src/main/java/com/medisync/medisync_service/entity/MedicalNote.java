@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -24,21 +23,23 @@ public class MedicalNote extends CommonFields implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "patient_id", nullable = false)
-    private Integer patientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
 
-    @Column(name = "doctor_id", nullable = false)
-    private Integer doctorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @Column(name = "audio_file_url", nullable = false)
+    private String audioUrl;
 
-    @Column(name = "description")
-    private String description;
+    @Lob
+    @Column(name = "transcription_text", nullable = false)
+    private String transcription;
 
-    @Column(name = "due_date")
-    private Date dueDate;
+    @Lob
+    @Column(name = "summary_text", nullable = false)
+    private String summary;
 
-    @Column(name = "status", nullable = false)
-    private String status;
 }

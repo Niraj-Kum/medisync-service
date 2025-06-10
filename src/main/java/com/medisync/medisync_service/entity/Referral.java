@@ -1,5 +1,6 @@
 package com.medisync.medisync_service.entity;
 
+import com.medisync.medisync_service.utils.enums.SpecilizationTypeEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,18 +24,23 @@ public class Referral extends CommonFields implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "sender_doctor_id", nullable = false)
-    private Integer senderDoctorId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "referred_to", nullable = false)
+    private SpecilizationTypeEnum referredTo;
 
-    @Column(name = "receiver_doctor_id", nullable = false)
-    private Integer receiverDoctorId;
+    @ManyToOne
+    @JoinColumn(name = "sender_doctor_id", nullable = false)
+    private Doctor senderDoctor;
 
-    @Column(name = "patient_id", nullable = false)
-    private Integer patientId;
+    @ManyToOne
+    @JoinColumn(name = "receiver_doctor_id", nullable = false)
+    private Doctor receiverDoctor;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @Column(name = "notes", nullable = false)
     private String notes;
 
-    @Column(name = "status", nullable = false)
-    private String status;
 }

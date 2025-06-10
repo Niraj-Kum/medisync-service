@@ -11,6 +11,7 @@ import com.medisync.medisync_service.utils.utilities.ExcryptionDecryptionHandler
 import io.micrometer.common.util.StringUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class DoctorService {
@@ -27,34 +28,34 @@ public class DoctorService {
     }
 
     public MediSyncResponse<String> checkUserExistsByMobileOrEmail(DoctorCheckRequest request) {
-        String encryptedEmail = ExcryptionDecryptionHandler.encrypt(request.getEmail());
-        String encryptedMobile = ExcryptionDecryptionHandler.encrypt(request.getMobile());
-        Boolean doctorExists = doctorRepository.existsByEmailOrMobile(encryptedEmail, encryptedMobile);
+        boolean doctorExists;
+        if(Objects.nonNull(request.getEmail())) {
+            String encryptedEmail = ExcryptionDecryptionHandler.encrypt(request.getEmail());
+            doctorExists = doctorRepository.existsByEmail(encryptedEmail);
+        } else {
+            String encryptedMobile = ExcryptionDecryptionHandler.encrypt(request.getMobile());
+            doctorExists = doctorRepository.existsByMobile(encryptedMobile);
+        }
         return Boolean.TRUE.equals(doctorExists)? new MediSyncResponse<>(ResponseMessage.USER_EXISTS): new MediSyncResponse<>(ResponseMessage.USER_NOT_FOUND, true);
     }
-
-//    public SignInResponse signInUsingMobileOrEmail(DoctorSignInRequest doctorSignInRequest) {
-//        if(Objects.isNull(doctorSignInRequest) || (StringUtils.isNotBlank(doctorSignInRequest.getEmail()) && StringUtils.isNotBlank(doctorSignInRequest.getMobile()))) {
-//            throw new BadRequestException(ResponseMessage.INVALID_MOBILE_OR_EMAIL);
-//        }
-//        String encryptedEmail = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getEmail());
-//        String encryptedMobile = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getMobile());
-//        Doctor doctor = doctorRepository.findByEmailOrMobile(encryptedEmail, encryptedMobile).orElseThrow(() -> new InvalidCredentialsException(ResponseMessage.INVALID_CREDENTIALS));
-//        return doctor.exists;
-//    }
 
     public SignInResponse verifyUserByMobileOrEmail(DoctorSignInRequest doctorSignInRequest) {
         if(Objects.isNull(doctorSignInRequest) || (StringUtils.isNotBlank(doctorSignInRequest.getEmail()) && StringUtils.isNotBlank(doctorSignInRequest.getMobile()))) {
             throw new BadRequestException(ResponseMessage.INVALID_MOBILE_OR_EMAIL);
         }
+        Doctor doctor;
+        if(Objects.nonNull(doctorSignInRequest.getEmail())) {
+            String encryptedEmail = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getEmail());
+            doctor = doctorRepository.findByEmail(encryptedEmail).orElseThrow(() -> new InvalidCredentialsException(ResponseMessage.INVALID_CREDENTIALS));
+        } else {
+            String encryptedMobile = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getMobile());
+            doctor = doctorRepository.findByMobile(encryptedMobile).orElseThrow(() -> new InvalidCredentialsException(ResponseMessage.INVALID_CREDENTIALS));
+        }
         String encryptedPassword = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getPassword());
-        String encryptedEmail = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getEmail());
-        String encryptedMobile = ExcryptionDecryptionHandler.encrypt(doctorSignInRequest.getMobile());
-        Doctor doctor = doctorRepository.findByEmailOrMobile(encryptedEmail, encryptedMobile).orElseThrow(() -> new InvalidCredentialsException(ResponseMessage.INVALID_CREDENTIALS));
         if(!doctor.getPassword().equals(encryptedPassword)) {
             throw new InvalidCredentialsException(ResponseMessage.INVALID_CREDENTIALS);
         }
-        return SignInResponse.builder().mobile(doctor.getMobile()).email(doctor.getEmail()).isNewUser(false).username(doctor.getUsername()).build();
+        return SignInResponse.builder().mobile(doctor.getMobile()).email(doctor.getEmail()).isNewUser(false).username(doctor.getUsername()).loggedInTime(new Date()).build();
     }
 
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {

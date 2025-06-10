@@ -22,9 +22,11 @@ CREATE TABLE patient (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    age INTEGER,
+    email VARCHAR(500) UNIQUE,
+    mobile VARCHAR(255) UNIQUE,
+    dob TIMESTAMP NOT NULL,
     gender VARCHAR(10),
+    doctor_id INT NOT NULL,
     medical_history TEXT
 );
 
@@ -46,11 +48,9 @@ CREATE TABLE patient_task (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     patient_id INTEGER REFERENCES patient(id),
-    doctor_id INTEGER REFERENCES doctor(id),
-    title VARCHAR(100),
-    description TEXT,
-    due_date DATE,
-    status VARCHAR(20)
+    description TEXT NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    due_date TIMESTAMP,
 );
 
 CREATE TABLE referral (
@@ -70,8 +70,9 @@ CREATE TABLE message (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
-    sender_id INTEGER REFERENCES doctor(id),
-    receiver_id INTEGER REFERENCES doctor(id),
-    content TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    sender_doctor_id INT,
+    recipient_doctor_id INT,
+    sender_patient_id INT,
+    recipient_patient_id INT,
+    content TEXT
 );

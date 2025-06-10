@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -24,15 +23,24 @@ public class Message extends CommonFields implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "sender_id", nullable = false)
-    private Integer senderId;
+    @ManyToOne
+    @JoinColumn(name = "sender_doctor_id", nullable = false)
+    private Doctor senderDoctor;
 
-    @Column(name = "receiver_id", nullable = false)
-    private Integer receiverId;
+    @ManyToOne
+    @JoinColumn(name = "recipient_doctor_id ", nullable = false)
+    private Doctor recipientDoctor;
 
+    @ManyToOne
+    @JoinColumn(name = "sender_patient_id", nullable = false)
+    private Patient senderPatient;
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_patient_id", nullable = false)
+    private Patient recipientPatient;
+
+    @Lob
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "timestamp", nullable = false)
-    private Date timestamp;
 }

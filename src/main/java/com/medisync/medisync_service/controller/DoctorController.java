@@ -3,6 +3,7 @@ package com.medisync.medisync_service.controller;
 import com.medisync.medisync_service.pojo.DoctorDTO;
 import com.medisync.medisync_service.pojo.DoctorSignInRequest;
 import com.medisync.medisync_service.pojo.MediSyncResponse;
+import com.medisync.medisync_service.pojo.SignInResponse;
 import com.medisync.medisync_service.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,17 @@ public class DoctorController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<DoctorDTO> verifyUserPassword(@RequestBody DoctorSignInRequest doctorSignInRequest) {
-        DoctorDTO created = doctorService.verifyUserByMobileOrEmail(doctorSignInRequest);
+    public ResponseEntity<SignInResponse> verifyUserPassword(@RequestBody DoctorSignInRequest doctorSignInRequest) {
+        SignInResponse created = doctorService.verifyUserByMobileOrEmail(doctorSignInRequest);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PostMapping("/googleSignIn")
-    public ResponseEntity<DoctorDTO> googleSignIn(@RequestBody DoctorDTO doctorDTO) {
 
-    }
+    // TODO google sign IN
+//    @PostMapping("/googleSignIn")
+//    public ResponseEntity<DoctorDTO> googleSignIn(@RequestBody DoctorDTO doctorDTO) {
+//
+//    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Integer id, @RequestBody DoctorDTO doctorDTO) {
